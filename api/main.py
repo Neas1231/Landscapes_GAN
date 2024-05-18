@@ -4,7 +4,7 @@ import torch
 from torch import nn
 import matplotlib.pyplot as plt
 
-st.header('Classic Portraits GAN')
+st.header('Landscapes GAN')
 
 
 class Generator(torch.nn.Module):
