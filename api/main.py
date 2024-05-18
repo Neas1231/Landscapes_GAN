@@ -44,7 +44,7 @@ class Generator(torch.nn.Module):
 
 
 generate = st.button('Generate')
-model = torch.load('./Generator_saved.pth', map_location='cpu')
+model = torch.load('./Generator_epoch_599.pth', map_location='cpu')
 model.eval()
 if generate:
     img = (((model((torch.rand(1, 100) - 0.5) / 0.5)[0] + 1) / 2).clamp(0, 1)).detach().numpy().transpose(1, 2, 0)
