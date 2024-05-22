@@ -1,8 +1,10 @@
+import os.path
+
 import cv2
 import streamlit as st
 import torch
 from torch import nn
-import matplotlib.pyplot as plt
+from glob import glob
 
 st.header('Landscapes GAN')
 
@@ -43,10 +45,19 @@ class Generator(torch.nn.Module):
         return x
 
 
-generate = st.button('Generate')
-model = torch.load('./Generator_epoch_599.pth', map_location='cpu')
-model.eval()
-if generate:
-    img = (((model((torch.rand(1, 100) - 0.5) / 0.5)[0] + 1) / 2).clamp(0, 1)).detach().numpy().transpose(1, 2, 0)
-    img = cv2.resize(img, (320, 300))
-    st.image(img)
+weights = list(map(lambda x: os.path.basename(x),glob('./weights/Generator*.pth')))
+weights.sort(key=lambda f: int(f[f.rfind('_')+1:f.rfind('.')]))
+model_weights = st.selectbox(
+    "Select model weights",
+    weights,
+    index=None,
+    placeholder="Select weights...",
+)
+if model_weights:
+    generate = st.button('Generate')
+    model = torch.load('./weights/'+model_weights, map_location='cpu')
+    model.eval()
+    if generate:
+        img = (((model((torch.rand(1, 100) - 0.5) / 0.5)[0] + 1) / 2).clamp(0, 1)).detach().numpy().transpose(1, 2, 0)
+        img = cv2.resize(img, (320, 300))
+        st.image(img)
